@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>听力练习 — 家庭教育 (HSK4)</title>
+<style>
+  :root {
+    --paper: #F6F1E7;
+    --ink: #2B2620;
+    --ink-soft: #6B6354;
+    --line: #D8CFBC;
+    --red: #A8392F;
+    --red-soft: #F2DCD8;
+    --green: #4C6B4F;
+    --green-soft: #E1EAE0;
+    --blue: #3D5A73;
+    --blue-soft: #DCE6EB;
+    --gold: #B8862E;
+    --gold-soft: #F2E6CC;
+    --card: #FFFDF8;
+    --grammar: #FFF3CD;
+    --grammar-border: #D4A017;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 28px 16px 80px;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 28px; }
+  .badge {
+    display: inline-block;
+    border: 2px solid var(--red);
+    color: var(--red);
+    border-radius: 5px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    transform: rotate(-2deg);
+    margin-bottom: 12px;
+  }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .h1-sub { font-size: 14px; color: var(--ink-soft); }
+  .instr {
+    margin-top: 14px;
+    background: var(--blue-soft);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--blue);
+    text-align: left;
+    line-height: 1.6;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 12px 0 24px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* LESSON CARD */
+  .lesson {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+  }
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lesson-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
+  }
+  .l1 .lesson-num { background: var(--blue); }
+  .l2 .lesson-num { background: var(--green); }
+  .l3 .lesson-num { background: var(--red); }
+  .lesson-title { font-size: 16px; font-weight: 700; }
+  .lesson-vn { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+  /* AUDIO PLAYER */
+  .player-wrap {
+    background: var(--paper);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .player-wrap audio {
+    flex: 1;
+    min-width: 200px;
+    height: 36px;
+    border-radius: 6px;
+    accent-color: var(--red);
+  }
+  .play-tip { font-size: 12px; color: var(--ink-soft); }
+
+  /* DIALOGUE */
+  .dialogue { line-height: 1.9; font-size: 15px; }
+  .turn { margin-bottom: 6px; }
+  .speaker {
+    font-weight: 700;
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+  .s-wang { color: var(--blue); }
+  .s-li { color: var(--green); }
+  .s-sun { color: var(--red); }
+
+  /* BLANK */
+  .blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--ink-soft);
+    min-width: 72px;
+    padding: 0 4px;
+    margin: 0 2px;
+    vertical-align: bottom;
+    position: relative;
+  }
+  .blank input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    width: 100%;
+    min-width: 60px;
+    text-align: center;
+    padding: 0;
+  }
+  .blank.correct { border-bottom-color: var(--green); }
+  .blank.correct input { color: var(--green); }
+  .blank.wrong { border-bottom-color: var(--red); }
+  .blank.wrong input { color: var(--red); }
+  .blank .answer-hint {
+    display: none;
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .blank.wrong .answer-hint { display: block; background: var(--red); }
+
+  /* GRAMMAR HIGHLIGHT */
+  .gram {
+    background: var(--grammar);
+    border: 1px solid var(--grammar-border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #6B4A00;
+  }
+
+  /* ACTIONS */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  button.btn {
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  button.btn:hover { background: var(--ink); color: var(--card); }
+  button.btn.red { border-color: var(--red); color: var(--red); }
+  button.btn.red:hover { background: var(--red); color: #fff; }
+  button.btn.green { border-color: var(--green); color: var(--green); }
+  button.btn.green:hover { background: var(--green); color: #fff; }
+
+  /* SCORE */
+  .score-bar {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .score-bar.good { background: var(--green-soft); color: var(--green); }
+  .score-bar.mid { background: var(--gold-soft); color: var(--gold); }
+  .score-bar.low { background: var(--red-soft); color: var(--red); }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 500px) {
+    h1 { font-size: 20px; }
+    .lesson { padding: 16px; }
+    .dialogue { font-size: 14px; }
+    .blank input { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="badge">听力练习 · LISTENING EXERCISE</div>
+  <h1>家庭教育专题</h1>
+  <p class="h1-sub">Chủ đề giáo dục gia đình — HSK4</p>
+  <div class="instr">
+    📌 Cách làm: Nghe file âm thanh → điền từ vào ô trống → nhấn "Kiểm tra" để xem kết quả.<br>
+    Ô <strong style="color:var(--green)">xanh</strong> = đúng · Ô <strong style="color:var(--red)">đỏ</strong> = sai (đáp án đúng hiện phía trên ô).
+  </div>
+</header>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--grammar-border)"></span> Ngữ pháp cần chú ý</span>
+  <span><span class="dot" style="background:var(--green)"></span> Điền đúng</span>
+  <span><span class="dot" style="background:var(--red)"></span> Điền sai</span>
+</div>
+
+<!-- BÀI 1 -->
+<div class="lesson l1" id="lesson1">
+  <div class="lesson-header">
+    <div class="lesson-num">1</div>
+    <div>
+      <div class="lesson-title">李老师建议王静让孩子养成好习惯</div>
+      <div class="lesson-vn">Thầy Lý khuyên Vương Tĩnh giúp con hình thành thói quen tốt</div>
+    </div>
+  </div>
+
+  <div class="player-wrap">
+    <span class="play-tip">🔊 Nghe bài 1:</span>
+    <audio controls src="bai1.mp3" preload="none">Trình duyệt không hỗ trợ audio.</audio>
+  </div>
+
+  <div class="dialogue">
+    <div class="turn"><span class="speaker s-wang">王静：</span>那个<span class="gram">一边</span>弹钢琴<span class="gram">一边</span>唱歌的男孩子是谁？<span class="blank" data-ans="表演"><input type="text" placeholder="　　"><span class="answer-hint">表演</span></span>得真棒！</div>
+
+    <div class="turn"><span class="speaker s-li">李老师：</span>是我<span class="blank" data-ans="孙子"><input type="text" placeholder="　　"><span class="answer-hint">孙子</span></span>。去年<span class="blank" data-ans="寒假"><input type="text" placeholder="　　"><span class="answer-hint">寒假</span></span>前的新年晚会他也<span class="blank" data-ans="表演"><input type="text" placeholder="　　"><span class="answer-hint">表演</span></span>过一次。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span>我<span class="blank" data-ans="想起来"><input type="text" placeholder="　　　"><span class="answer-hint">想起来</span></span>了，这孩子<span class="gram">又</span><span class="blank" data-ans="聪明"><input type="text" placeholder="　　"><span class="answer-hint">聪明</span></span><span class="gram">又</span><span class="blank" data-ans="可爱"><input type="text" placeholder="　　"><span class="answer-hint">可爱</span></span>，你们<span class="blank" data-ans="教育"><input type="text" placeholder="　　"><span class="answer-hint">教育</span></span>得真好！</div>
+
+    <div class="turn"><span class="speaker s-li">李老师：</span>是他父母<span class="blank" data-ans="教育"><input type="text" placeholder="　　"><span class="answer-hint">教育</span></span>得好。父母是孩子最重要的老师。他父母<span class="gram">不仅</span>教他<span class="blank" data-ans="知识"><input type="text" placeholder="　　"><span class="answer-hint">知识</span></span>，<span class="gram">而且</span>还花了很长时间帮助他<span class="blank" data-ans="养成"><input type="text" placeholder="　　"><span class="answer-hint">养成</span></span>了非常好的<span class="blank" data-ans="习惯"><input type="text" placeholder="　　"><span class="answer-hint">习惯</span></span>，现在他每天都自己练习弹钢琴。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span><span class="gram">让</span>孩子<span class="blank" data-ans="养成"><input type="text" placeholder="　　"><span class="answer-hint">养成</span></span>一个好<span class="blank" data-ans="习惯"><input type="text" placeholder="　　"><span class="answer-hint">习惯</span></span>实在太重要了，看来我得向他父母好好儿<span class="blank" data-ans="学习"><input type="text" placeholder="　　"><span class="answer-hint">学习</span></span>。</div>
+
+    <div class="turn"><span class="speaker s-li">李老师：</span>对。<span class="gram">如果</span>希望有一个<span class="blank" data-ans="优秀"><input type="text" placeholder="　　"><span class="answer-hint">优秀</span></span>的孩子，你<span class="gram">就</span>要先成为一位<span class="blank" data-ans="优秀"><input type="text" placeholder="　　"><span class="answer-hint">优秀</span></span>的父亲或者母亲。</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn red" onclick="checkLesson('lesson1')">✓ Kiểm tra bài 1</button>
+    <button class="btn" onclick="resetLesson('lesson1')">↺ Làm lại</button>
+    <button class="btn green" onclick="showAll('lesson1')">👁 Xem đáp án</button>
+  </div>
+  <div class="score-bar" id="score1"></div>
+</div>
+
+<!-- BÀI 2 -->
+<div class="lesson l2" id="lesson2">
+  <div class="lesson-header">
+    <div class="lesson-num">2</div>
+    <div>
+      <div class="lesson-title">王静建议孙月教育孩子学会安排时间</div>
+      <div class="lesson-vn">Vương Tĩnh khuyên Tôn Nguyệt dạy con biết sắp xếp thời gian</div>
+    </div>
+  </div>
+
+  <div class="player-wrap">
+    <span class="play-tip">🔊 Nghe bài 2:</span>
+    <audio controls src="bai2.mp3" preload="none">Trình duyệt không hỗ trợ audio.</audio>
+  </div>
+
+  <div class="dialogue">
+    <div class="turn"><span class="speaker s-wang">王静：</span>看你<span class="blank" data-ans="脸色"><input type="text" placeholder="　　"><span class="answer-hint">脸色</span></span>不太好，是不是昨晚没<span class="blank" data-ans="休息"><input type="text" placeholder="　　"><span class="answer-hint">休息</span></span>好？</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>别提了。我女儿昨晚做<span class="blank" data-ans="作业"><input type="text" placeholder="　　"><span class="answer-hint">作业</span></span><span class="gram">又</span>做到11点。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span><span class="blank" data-ans="睡觉"><input type="text" placeholder="　　"><span class="answer-hint">睡觉</span></span>太晚对孩子的身体没有好处。最近孩子<span class="blank" data-ans="作业"><input type="text" placeholder="　　"><span class="answer-hint">作业</span></span>是不是太多了？</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>主要是她做事情<span class="gram">比较</span>慢，<span class="gram">比如</span>早上<span class="blank" data-ans="闹钟"><input type="text" placeholder="　　"><span class="answer-hint">闹钟</span></span>响了她不醒，我<span class="blank" data-ans="赶时间"><input type="text" placeholder="　　　"><span class="answer-hint">赶时间</span></span>送她上学，她<span class="gram">又</span>急着上厕所。每天<span class="gram">因为</span>这些小事<span class="blank" data-ans="批评"><input type="text" placeholder="　　"><span class="answer-hint">批评</span></span>她，弄得我俩<span class="blank" data-ans="心情"><input type="text" placeholder="　　"><span class="answer-hint">心情</span></span>都不好。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span>孩子做事慢，<span class="gram">往往</span>是<span class="gram">因为</span>他们不会<span class="blank" data-ans="安排"><input type="text" placeholder="　　"><span class="answer-hint">安排</span></span>自己的时间。你<span class="gram">应该</span>让孩子学会<span class="blank" data-ans="管理"><input type="text" placeholder="　　"><span class="answer-hint">管理</span></span>时间。</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>看来还是我的<span class="blank" data-ans="教育"><input type="text" placeholder="　　"><span class="answer-hint">教育</span></span>方法有问题。平时看她做事情慢，总想替她做，以后得让她学会<span class="blank" data-ans="安排"><input type="text" placeholder="　　"><span class="answer-hint">安排</span></span>时间，自己的事情自己做。</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn red" onclick="checkLesson('lesson2')">✓ Kiểm tra bài 2</button>
+    <button class="btn" onclick="resetLesson('lesson2')">↺ Làm lại</button>
+    <button class="btn green" onclick="showAll('lesson2')">👁 Xem đáp án</button>
+  </div>
+  <div class="score-bar" id="score2"></div>
+</div>
+
+<!-- BÀI 3 -->
+<div class="lesson l3" id="lesson3">
+  <div class="lesson-header">
+    <div class="lesson-num">3</div>
+    <div>
+      <div class="lesson-title">王静和孙月讨论表扬孩子的方法</div>
+      <div class="lesson-vn">Vương Tĩnh và Tôn Nguyệt thảo luận về cách khen ngợi trẻ</div>
+    </div>
+  </div>
+
+  <div class="player-wrap">
+    <span class="play-tip">🔊 Nghe bài 3:</span>
+    <audio controls src="bai3.mp3" preload="none">Trình duyệt không hỗ trợ audio.</audio>
+  </div>
+
+  <div class="dialogue">
+    <div class="turn"><span class="speaker s-wang">王静：</span>明天<span class="gram">又</span>要带我儿子去医院<span class="blank" data-ans="打针"><input type="text" placeholder="　　"><span class="answer-hint">打针</span></span>，想想我就<span class="blank" data-ans="头疼"><input type="text" placeholder="　　"><span class="answer-hint">头疼</span></span>。他就怕<span class="blank" data-ans="打针"><input type="text" placeholder="　　"><span class="answer-hint">打针</span></span>，每次<span class="blank" data-ans="打针"><input type="text" placeholder="　　"><span class="answer-hint">打针</span></span>都哭得特别<span class="blank" data-ans="厉害"><input type="text" placeholder="　　"><span class="answer-hint">厉害</span></span>。</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>记得我女儿小时候，带她去医院<span class="blank" data-ans="打针"><input type="text" placeholder="　　"><span class="answer-hint">打针</span></span>，刚开始，她<span class="blank" data-ans="害怕"><input type="text" placeholder="　　"><span class="answer-hint">害怕</span></span>得要哭。我就小声地和<span class="blank" data-ans="护士"><input type="text" placeholder="　　"><span class="answer-hint">护士</span></span>说我女儿很<span class="blank" data-ans="勇敢"><input type="text" placeholder="　　"><span class="answer-hint">勇敢</span></span>，一点儿也不怕打针，女儿听了以后马上就不哭了。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span>原来<span class="blank" data-ans="鼓励"><input type="text" placeholder="　　"><span class="answer-hint">鼓励</span></span>和<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span>对小孩儿挺有用的，下次我也试试。</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>不过<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span><span class="gram">也</span>是一门<span class="blank" data-ans="艺术"><input type="text" placeholder="　　"><span class="answer-hint">艺术</span></span>，<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span>千万不要太多，过多的<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span>可能会给孩子带来<span class="blank" data-ans="压力"><input type="text" placeholder="　　"><span class="answer-hint">压力</span></span>。<span class="gram">不仅</span>起不到<span class="blank" data-ans="鼓励"><input type="text" placeholder="　　"><span class="answer-hint">鼓励</span></span>的作用，<span class="gram">还</span>可能让孩子<span class="blank" data-ans="怀疑"><input type="text" placeholder="　　"><span class="answer-hint">怀疑</span></span>自己的<span class="blank" data-ans="能力"><input type="text" placeholder="　　"><span class="answer-hint">能力</span></span>，变得没有<span class="blank" data-ans="信心"><input type="text" placeholder="　　"><span class="answer-hint">信心</span></span>。</div>
+
+    <div class="turn"><span class="speaker s-wang">王静：</span>那怎么<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span>孩子<span class="gram">才</span>会更有效果呢？</div>
+
+    <div class="turn"><span class="speaker s-sun">孙月：</span>我认为<span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span>要<span class="blank" data-ans="及时"><input type="text" placeholder="　　"><span class="answer-hint">及时</span></span>，<span class="gram">而且</span><span class="blank" data-ans="表扬"><input type="text" placeholder="　　"><span class="answer-hint">表扬</span></span><span class="gram">不仅仅</span>要看<span class="blank" data-ans="结果"><input type="text" placeholder="　　"><span class="answer-hint">结果</span></span>，<span class="gram">更</span>要看<span class="blank" data-ans="过程"><input type="text" placeholder="　　"><span class="answer-hint">过程</span></span>，这样<span class="gram">才</span>能<span class="blank" data-ans="鼓励"><input type="text" placeholder="　　"><span class="answer-hint">鼓励</span></span>他的<span class="blank" data-ans="积极性"><input type="text" placeholder="　　　"><span class="answer-hint">积极性</span></span>，让他变得<span class="blank" data-ans="勇敢"><input type="text" placeholder="　　"><span class="answer-hint">勇敢</span></span>，不怕<span class="blank" data-ans="困难"><input type="text" placeholder="　　"><span class="answer-hint">困难</span></span>。</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn red" onclick="checkLesson('lesson3')">✓ Kiểm tra bài 3</button>
+    <button class="btn" onclick="resetLesson('lesson3')">↺ Làm lại</button>
+    <button class="btn green" onclick="showAll('lesson3')">👁 Xem đáp án</button>
+  </div>
+  <div class="score-bar" id="score3"></div>
+</div>
+
+<footer>听力练习 · 家庭教育专题 · HSK4 · Made for Chinese listening practice</footer>
+</div>
+
+<script>
+function normalize(s) {
+  return s.trim().replace(/\s+/g, '');
+}
+
+function checkLesson(lessonId) {
+  const lesson = document.getElementById(lessonId);
+  const blanks = lesson.querySelectorAll('.blank');
+  let correct = 0;
+  blanks.forEach(function(blank) {
+    const input = blank.querySelector('input');
+    const ans = blank.getAttribute('data-ans');
+    const val = normalize(input.value);
+    blank.classList.remove('correct', 'wrong');
+    if (val === '') return;
+    if (val === ans) {
+      blank.classList.add('correct');
+      correct++;
+    } else {
+      blank.classList.add('wrong');
+    }
+  });
+  const filled = Array.from(blanks).filter(b => normalize(b.querySelector('input').value) !== '').length;
+  const total = blanks.length;
+  const scoreEl = lesson.querySelector('.score-bar');
+  scoreEl.style.display = 'block';
+  const pct = total > 0 ? Math.round(correct / total * 100) : 0;
+  scoreEl.className = 'score-bar';
+  if (pct >= 80) scoreEl.classList.add('good');
+  else if (pct >= 50) scoreEl.classList.add('mid');
+  else scoreEl.classList.add('low');
+  scoreEl.textContent = '✓ Đúng: ' + correct + ' / ' + total + ' (' + pct + '%) — ' + (pct >= 80 ? '很棒！继续保持！' : pct >= 50 ? '不错！再听一次吧。' : '再听一遍，继续加油！');
+}
+
+function resetLesson(lessonId) {
+  const lesson = document.getElementById(lessonId);
+  lesson.querySelectorAll('.blank').forEach(function(blank) {
+    blank.classList.remove('correct', 'wrong');
+    blank.querySelector('input').value = '';
+  });
+  const scoreEl = lesson.querySelector('.score-bar');
+  scoreEl.style.display = 'none';
+}
+
+function showAll(lessonId) {
+  const lesson = document.getElementById(lessonId);
+  lesson.querySelectorAll('.blank').forEach(function(blank) {
+    const input = blank.querySelector('input');
+    const ans = blank.getAttribute('data-ans');
+    input.value = ans;
+    blank.classList.remove('wrong');
+    blank.classList.add('correct');
+  });
+  const scoreEl = lesson.querySelector('.score-bar');
+  scoreEl.style.display = 'block';
+  scoreEl.className = 'score-bar good';
+  scoreEl.textContent = '👁 Đã hiện toàn bộ đáp án — hãy nghe lại và ghi nhớ nhé!';
+}
+</script>
+</body>
+</html>
